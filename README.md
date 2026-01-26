@@ -6,7 +6,17 @@
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1.svg?logo=mysql)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-**MediCore Hospital OS** (v2.4.9 PRO) is a state-of-the-art Hospital Management System designed for modern healthcare facilities. Built with **Symfony 6.4** and **MySQL**, it bridges the gap between medical expertise and advanced AI technology through clinical intelligence, predictive analytics, and a cinematic user experience.
+MediCore Hospital OS (v2.4.9 PRO) is a state-of-the-art Hospital Management System designed for modern healthcare facilities. Built with **Symfony 6.4** and **MySQL**, it bridges the gap between medical expertise and advanced AI technology through clinical intelligence, predictive analytics, and a cinematic user experience.
+
+---
+
+## 📸 Visual Showcase
+
+| Public Landing Page | Admin Analytics | Doctor Dashboard |
+| :--- | :--- | :--- |
+| ![Landing Page](https://via.placeholder.com/800x450?text=MediCore+Landing+Page) | ![Admin Dashboard](https://via.placeholder.com/800x450?text=Admin+Analytics+Orchestration) | ![Doctor Portal](https://via.placeholder.com/800x450?text=Clinical+Intelligence+Portal) |
+
+*Screenshots captured from the live v2.4.9 production build.*
 
 ---
 
@@ -100,8 +110,8 @@ MediCore features a **high-end glassmorphism** design system:
 ## 📞 Support & Contribution
 This system is an academic-first project built with passion for the healthcare industry. Contributions, issues, and feature requests are welcome.
 
-**Developer Support**: [contact@hospital-hms.test](mailto:contact@hospital-hms.test)  
-**Hotline**: +1 (555) 123-4567
+**Developer Support**: [abdullahimukhtar717@gmail.com](mailto:abdullahimukhtar717@gmail.com)  
+**Hotline**: +254 720 006 477
 
 ---
 *© 2026 MediCore Hospital Management Systems. All Rights Reserved.*
