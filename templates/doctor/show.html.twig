@@ -1,0 +1,111 @@
+{% extends 'page_layout.html.twig' %}
+
+{% block page_title %}Doctor Profile{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_doctor_index') }}" class="text-decoration-none">Doctors</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ doctor.user.fullName }}</li>
+{% endblock %}
+
+{% block page_actions %}
+    <div class="d-flex gap-2 justify-content-end">
+        <a href="{{ path('app_doctor_edit', {'id': doctor.id}) }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-pencil-fill me-2"></i>Edit Profile
+        </a>
+        <form method="post" action="{{ path('app_doctor_delete', {'id': doctor.id}) }}" onsubmit="return confirm('Are you sure you want to delete this doctor?');" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ doctor.id) }}">
+            <button class="btn btn-outline-danger rounded-pill px-4"><i class="bi bi-trash me-2"></i>Delete</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block page_content %}
+<div class="row g-4">
+    {# Profile Card #}
+    <div class="col-lg-4">
+        <div class="glass-card text-center h-100">
+            <div class="mb-4 position-relative d-inline-block">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 120px; height: 120px; font-size: 3rem;">
+                    {{ doctor.user.fullName|slice(0, 1)|upper }}
+                </div>
+                <span class="position-absolute bottom-0 end-0 bg-success border border-white border-2 rounded-circle p-2" title="Active"></span>
+            </div>
+            <h3 class="fw-bold mb-1">{{ doctor.user.fullName }}</h3>
+            <p class="text-primary fw-semibold mb-3">{{ doctor.specialization }}</p>
+            
+            <div class="badge bg-light text-primary border px-3 py-2 rounded-pill mb-4">
+                <i class="bi bi-building me-1"></i> {{ doctor.department.name }}
+            </div>
+
+            <div class="row g-3 text-start">
+                <div class="col-12 p-3 rounded-4 bg-white bg-opacity-50">
+                    <div class="text-muted small text-uppercase fw-bold mb-1">Email Address</div>
+                    <div class="fw-semibold">{{ doctor.user.email }}</div>
+                </div>
+                <div class="col-6 p-3 rounded-4 bg-white bg-opacity-50">
+                    <div class="text-muted small text-uppercase fw-bold mb-1">Experience</div>
+                    <div class="fw-semibold">{{ doctor.experience }} Years</div>
+                </div>
+                <div class="col-6 p-3 rounded-4 bg-white bg-opacity-50">
+                    <div class="text-muted small text-uppercase fw-bold mb-1">Consultation</div>
+                    <div class="fw-semibold text-success">${{ doctor.consultationFee }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Appointments Card #}
+    <div class="col-lg-8">
+        <div class="glass-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Assigned Appointments</h4>
+                <span class="badge rounded-pill bg-primary px-3">{{ doctor.appointments|length }} Total</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-glass">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in doctor.appointments %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ appointment.patient.user.fullName }}</div>
+                                    <small class="text-muted">ID: #PAT-{{ appointment.patient.id }}</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">{{ appointment.appointmentDate|date('M d, Y') }}</div>
+                                    <small class="text-muted">{{ appointment.appointmentDate|date('H:i') }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill shadow-sm {% if appointment.status == 'Completed' %}bg-success{% elseif appointment.status == 'Pending' %}bg-warning{% else %}bg-primary{% endif %} px-3">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('app_appointment_show', {id: appointment.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                                    No appointments scheduled for this doctor.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

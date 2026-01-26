@@ -1,0 +1,129 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}System Settings | MediCore{% endblock %}
+
+{% block dashboard_content %}
+<div class="dashboard-header d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h2 class="page-title">Hospital Orchestration</h2>
+        <p class="page-subtitle">Refine your digital ecosystem identity and global configurations.</p>
+    </div>
+    <div class="badge bg-primary bg-opacity-10 text-primary p-3 rounded-4 d-flex align-items-center gap-2">
+        <i class="bi bi-cpu-fill fs-5"></i>
+        <div class="lh-1">
+            <div class="fw-bold small">System Status</div>
+            <small class="opacity-75" style="font-size: 0.6rem;">Operational</small>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        {{ form_start(form) }}
+        <div class="glass-card p-5 border-0 shadow-lg animate__animated animate__fadeInLeft">
+            <h5 class="fw-bold text-dark mb-4 d-flex align-items-center gap-2">
+                <i class="bi bi-layers-half text-primary"></i> Global Identity
+            </h5>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        {{ form_label(form.hospitalName, 'Primary Organization Name', {'label_attr': {'class': 'form-label fw-bold small text-muted text-uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.hospitalName, {'attr': {'class': 'form-control rounded-4 border-0 bg-light p-3', 'placeholder': 'e.g. MediCore General'}}) }}
+                        {{ form_errors(form.hospitalName) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        {{ form_label(form.dashboardTitle, 'Dashboard Branding Title', {'label_attr': {'class': 'form-label fw-bold small text-muted text-uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.dashboardTitle, {'attr': {'class': 'form-control rounded-4 border-0 bg-light p-3', 'placeholder': 'e.g. Command Center'}}) }}
+                        {{ form_errors(form.dashboardTitle) }}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        {{ form_label(form.contactEmail, 'Administrative Email', {'label_attr': {'class': 'form-label fw-bold small text-muted text-uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.contactEmail, {'attr': {'class': 'form-control rounded-4 border-0 bg-light p-3', 'placeholder': 'admin@medicore.os'}}) }}
+                        {{ form_errors(form.contactEmail) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        {{ form_label(form.contactPhone, 'Hotline Contact', {'label_attr': {'class': 'form-label fw-bold small text-muted text-uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.contactPhone, {'attr': {'class': 'form-control rounded-4 border-0 bg-light p-3', 'placeholder': '+1-800-MEDICORE'}}) }}
+                        {{ form_errors(form.contactPhone) }}
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-4">
+                    <h5 class="fw-bold text-dark mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-palette text-primary"></i> Visual Branding
+                    </h5>
+                    <div class="p-4 rounded-4 bg-light border-0 d-flex align-items-center gap-4">
+                        <div class="logo-preview-box shadow-sm bg-white rounded-4 p-2 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; border: 2px dashed #cbd5e1;">
+                            {% if settings.logoPath %}
+                                <img src="{{ asset('uploads/logos/' ~ settings.logoPath) }}" alt="Logo" class="img-fluid" style="max-height: 80px;">
+                            {% else %}
+                                <i class="bi bi-cloud-arrow-up text-muted fs-1"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            {{ form_label(form.logoFile, 'Upload Brand Identity (SVG/PNG)', {'label_attr': {'class': 'form-label fw-bold small text-muted text-uppercase tracking-wider'}}) }}
+                            {{ form_widget(form.logoFile, {'attr': {'class': 'form-control rounded-3'}}) }}
+                            <small class="text-muted d-block mt-2">Maximum file size: 1MB. Preferred dimensions: 400x120px.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-top d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 shadow-lg fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-hdd-fill"></i> Commit Changes
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="animate__animated animate__fadeInRight">
+            <div class="glass-card p-4 border-0 shadow-lg mb-4 bg-primary bg-opacity-10 text-primary">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle-fill"></i> Help & Guidance
+                </h5>
+                <p class="small opacity-75 mb-0">
+                    Configurations saved here will propagate across the entire **HMS Ecosystem**. Ensure the accuracy of administrative emails as they are used for automated security alerts and recovery.
+                </p>
+            </div>
+            
+            <div class="glass-card p-4 border-0 shadow-lg bg-white">
+                <h6 class="fw-bold mb-4 text-muted text-uppercase small tracking-widest">Environment Status</h6>
+                <div class="list-group list-group-flush small">
+                    <div class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span class="text-muted">Database Engine:</span>
+                        <span class="fw-bold">MySQL 8.0</span>
+                    </div>
+                    <div class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span class="text-muted">Application Layer:</span>
+                        <span class="fw-bold">Symfony 6.4</span>
+                    </div>
+                    <div class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span class="text-muted">Security Layer:</span>
+                        <span class="badge bg-success rounded-pill px-3">Active (SSL)</span>
+                    </div>
+                    <div class="list-group-item bg-transparent px-0 d-flex justify-content-between">
+                        <span class="text-muted">API Integrity:</span>
+                        <span class="badge bg-info bg-opacity-10 text-info px-3">Syncing</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 rounded-4 bg-light text-center">
+                    <div class="text-muted small">Current Version</div>
+                    <div class="fw-bold fs-4 text-dark">v2.4.9 <span class="badge bg-primary fs-6 fw-normal ms-1">PRO</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

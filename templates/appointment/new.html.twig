@@ -1,0 +1,52 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block dashboard_title %}New Appointment{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="glass-card p-5">
+            <h4 class="fw-bold mb-4 text-primary text-center">Book New Appointment</h4>
+            {{ form_start(form) }}
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        {{ form_label(form.patient, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.patient, {'attr': {'class': 'form-select rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_label(form.doctor, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.doctor, {'attr': {'class': 'form-select rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{ form_label(form.appointmentDate, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.appointmentDate, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_label(form.status, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.status, {'attr': {'class': 'form-select rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    
+                    <div class="col-12">
+                        {{ form_label(form.tokenNumber, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.tokenNumber, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_label(form.notes, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.notes, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'rows': '4', 'placeholder': 'Optional medical notes...'}}) }}
+                    </div>
+                </div>
+
+                <div class="mt-5 d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_appointment_index') }}" class="btn btn-light rounded-pill px-4 shadow-sm text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Schedule
+                    </a>
+                    <button class="btn btn-primary rounded-pill px-5 py-3 shadow-lg fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> Confirm Booking
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

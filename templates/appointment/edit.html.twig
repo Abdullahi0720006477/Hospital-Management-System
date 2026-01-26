@@ -1,0 +1,34 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block dashboard_title %}Edit Appointment{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="glass-card p-5">
+            <h4 class="fw-bold mb-4">Edit Appointment</h4>
+            {{ form_start(form) }}
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_row(form.patient, {'attr': {'class': 'form-select rounded-3'}}) }}</div>
+                    <div class="col-md-6">{{ form_row(form.doctor, {'attr': {'class': 'form-select rounded-3'}}) }}</div>
+                    
+                    <div class="col-md-6">{{ form_row(form.appointmentDate, {'attr': {'class': 'form-control rounded-3'}}) }}</div>
+                    <div class="col-md-6">{{ form_row(form.status, {'attr': {'class': 'form-select rounded-3'}}) }}</div>
+                    
+                    <div class="col-12">{{ form_row(form.tokenNumber, {'attr': {'class': 'form-control rounded-3'}}) }}</div>
+                    <div class="col-12">{{ form_row(form.notes, {'attr': {'class': 'form-control rounded-3', 'rows': '3'}}) }}</div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_appointment_index') }}" class="text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Schedule
+                    </a>
+                    <button class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-check-lg me-1"></i> Update Appointment
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

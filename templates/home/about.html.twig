@@ -1,0 +1,312 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About Us | {{ system_settings.hospitalName|default('MediCore Hospital') }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Modern Premium Palette */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --soft-mint: #f0fff4;
+        --soft-peach: #fff5f5;
+        --soft-sky: #ebf8ff;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.3);
+    }
+
+    .about-page {
+        background: #f8fafc;
+        color: #1e293b;
+        overflow-x: hidden;
+    }
+
+    /* Modern Hero Section */
+    .about-hero {
+        padding: 180px 0 120px;
+        background: radial-gradient(circle at top right, #e0f2fe, transparent),
+                    radial-gradient(circle at bottom left, #fef3c7, transparent),
+                    linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+        text-align: center;
+        position: relative;
+    }
+
+    .about-hero h1 {
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        background: linear-gradient(90deg, #1e293b 0%, #4361ee 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Human-Centric Section */
+    .mission-section {
+        margin-top: -60px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .mission-img-wrapper {
+        position: relative;
+        padding: 1rem;
+    }
+
+    .mission-img-wrapper img {
+        border-radius: 40px;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+        transition: transform 0.5s ease;
+    }
+
+    .mission-img-wrapper:hover img {
+        transform: scale(1.02);
+    }
+
+    .image-accent {
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-gradient);
+        top: 20px;
+        left: 20px;
+        border-radius: 40px;
+        opacity: 0.1;
+    }
+
+    .glass-feature-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 30px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .glass-feature-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Interactive Pillars */
+    .pillar-card {
+        padding: 3rem;
+        border-radius: 40px;
+        background: white;
+        border: 1px solid rgba(0,0,0,0.03);
+        box-shadow: 0 10px 30px rgba(0, 64, 128, 0.03);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .pillar-card.active {
+        box-shadow: 0 30px 60px rgba(67, 97, 238, 0.15);
+        border-color: rgba(67, 97, 238, 0.2);
+        transform: translateY(-15px);
+    }
+
+    .pillar-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        transition: all 0.4s ease;
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .pillar-card.active .pillar-icon {
+        background: #4361ee;
+        color: white;
+        transform: rotate(10deg);
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+    }
+
+    .content-display-box {
+        background: white;
+        border-radius: 40px;
+        padding: 4rem;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.04);
+        margin-top: 50px;
+        border: 1px solid rgba(0,0,0,0.02);
+    }
+
+    .feature-tag {
+        display: inline-block;
+        padding: 8px 18px;
+        border-radius: 100px;
+        background: #eef2ff;
+        color: #4361ee;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 1.5rem;
+    }
+
+    .check-list-item {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+    }
+
+    .check-list-icon {
+        width: 32px;
+        height: 32px;
+        background: #dcfce7;
+        color: #15803d;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <span class="feature-tag animate__animated animate__fadeIn">About MediCore</span>
+            <h1 class="display-3 mb-4 animate__animated animate__fadeInUp">Elevating the Standard <br>of Human Care</h1>
+            <p class="lead text-muted mx-auto mb-0" style="max-width: 700px; font-weight: 400;">
+                We combine empathetic design with industrial-grade healthcare technology <br>to create an environment where healing happens naturally.
+            </p>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section pb-5">
+        <div class="container pb-5">
+            <div class="row align-items-center mb-5 gy-5">
+                <div class="col-lg-6">
+                    <div class="mission-img-wrapper animate__animated animate__fadeInLeft">
+                        <div class="image-accent"></div>
+                        <img src="{{ asset('images/friendly_care.png') }}" class="img-fluid" alt="MediCore Facility">
+                    </div>
+                </div>
+                <div class="col-lg-6 ps-lg-5">
+                    <div class="glass-feature-card animate__animated animate__fadeInRight">
+                        <h2 class="display-6 fw-bold mb-4">Patient-Centricity <br>as a Philosophy</h2>
+                        <p class="text-muted mb-4" style="font-size: 1.1rem; line-height: 1.7;">
+                            Beyond advanced diagnostics and surgical suites, MediCore is built on the belief that a hospital should be a sanctuary. 
+                        </p>
+                        
+                        <div class="mb-4">
+                            <div class="check-list-item">
+                                <div class="check-list-icon"><i class="bi bi-check-lg"></i></div>
+                                <span>Warm, sunlight-optimized patient architecture</span>
+                            </div>
+                            <div class="check-list-item">
+                                <div class="check-list-icon"><i class="bi bi-check-lg"></i></div>
+                                <span>24/7 access to your own digital health dashboard</span>
+                            </div>
+                            <div class="check-list-item">
+                                <div class="check-list-icon"><i class="bi bi-check-lg"></i></div>
+                                <span>Seamless integration of AI-assisted diagnoses</span>
+                            </div>
+                        </div>
+
+                        <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">Explore Our Portal</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillars Section -->
+            <div class="text-center mt-5 pt-5 mb-5">
+                <h2 class="display-5 fw-bold">Our Foundation</h2>
+                <p class="text-muted">The core principles that drive every medical decision we make.</p>
+            </div>
+
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="pillar-card active" onclick="switchContent('integrity', this)">
+                        <div class="pillar-icon"><i class="bi bi-shield-check"></i></div>
+                        <h4 class="fw-bold">Integrity</h4>
+                        <p class="small text-muted mb-0">Radical transparency in data.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="pillar-card" onclick="switchContent('compassion', this)">
+                        <div class="pillar-icon"><i class="bi bi-heart-pulse"></i></div>
+                        <h4 class="fw-bold">Compassion</h4>
+                        <p class="small text-muted mb-0">Human empathy at scale.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="pillar-card" onclick="switchContent('innovation', this)">
+                        <div class="pillar-icon"><i class="bi bi-cpu"></i></div>
+                        <h4 class="fw-bold">Innovation</h4>
+                        <p class="small text-muted mb-0">Next-gen medical stack.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-display" class="content-display-box text-center">
+                <h3 class="display-6 fw-bold mb-4" id="display-title">Integrity in Action</h3>
+                <p class="fs-5 text-muted mb-0 mx-auto" id="display-text" style="max-width: 850px; line-height: 1.8;">
+                    We provide transparent billing and real-time access to your medical records. No hidden fees, no complex paperwork. Just the truth about your health and our care.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-5 bg-dark text-white text-center position-relative overflow-hidden">
+        <div class="position-absolute translate-middle" style="top: 50%; left: 50%; width: 600px; height: 600px; background: rgba(67, 97, 238, 0.1); filter: blur(100px); z-index: 0;"></div>
+        <div class="container py-5 position-relative" style="z-index: 1;">
+            <h2 class="display-5 fw-bold mb-4">Ready to Experience <br>the Future of Care?</h2>
+            <p class="mb-5 opacity-75 fs-5 mx-auto" style="max-width: 600px;">Join thousands of patients who have already switched to the MediCore digital ecosystem.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold">Sign In to Dashboard</a>
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-light btn-lg rounded-pill px-5">Contact Reception</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    const contentMap = {
+        integrity: {
+            title: "Integrity in Action",
+            text: "We provide transparent billing and real-time access to your medical records. No hidden fees, no complex paperwork. Just the truth about your health and our care."
+        },
+        compassion: {
+            title: "Compassion Everywhere",
+            text: "Our rooms are designed to feel like home, with space for families and 24/7 support for mental well-being alongside physical recovery. We treat the person, not the condition."
+        },
+        innovation: {
+            title: "Smarter Innovation",
+            text: "From AI-driven early diagnosis to robotic precision surgery, we integrate the world's most advanced medical breakthroughs into your daily care routine effortlessly."
+        }
+    };
+
+    function switchContent(key, element) {
+        document.querySelectorAll('.pillar-card').forEach(card => card.classList.remove('active'));
+        element.classList.add('active');
+
+        const display = document.getElementById('content-display');
+        display.style.opacity = '0';
+        display.style.transform = 'translateY(10px)';
+        display.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            document.getElementById('display-title').innerText = contentMap[key].title;
+            document.getElementById('display-text').innerText = contentMap[key].text;
+            display.style.opacity = '1';
+            display.style.transform = 'translateY(0)';
+        }, 300);
+    }
+</script>
+{% endblock %}

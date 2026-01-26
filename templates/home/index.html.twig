@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome | {{ system_settings.hospitalName|default('MediCore Hospital') }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Premium Hover Anim */
+    .btn-premium-glow {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .btn-premium-glow:hover {
+        box-shadow: 0 0 20px rgba(67, 97, 238, 0.4);
+        transform: scale(1.05);
+    }
+    
+    /* Stats Section Overlay */
+    .hero-stats {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        width: 90%;
+        max-width: 1000px;
+    }
+    
+    .stat-pill {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 15px 30px;
+        border-radius: 100px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Scrolling Announcement Ticker -->
+<div class="announcement-ticker bg-primary text-white py-2 overflow-hidden position-relative" style="z-index: 1029; margin-top: 0;">
+    <div class="ticker-wrapper d-flex align-items-center">
+        <div class="ticker-content fw-medium small text-uppercase tracking-widest">
+            🚀 Welcome to MediCore Hospital Management System • 🏥 New AI Diagnostic Center Now Open • 💉 COVID-19 & Flu Vaccination Drive - Book Now • 👨‍⚕️ 24/7 Specialist Consultations Available • 🌟 Rated #1 for Patient Care in 2025 • 🚀 Welcome to MediCore Hospital Management System
+        </div>
+    </div>
+</div>
+
+<style>
+    .announcement-ticker {
+        background: linear-gradient(90deg, #4361ee, #4cc9f0);
+    }
+    .ticker-wrapper {
+        white-space: nowrap;
+        animation: ticker 30s linear infinite;
+    }
+    .ticker-content {
+        display: inline-block;
+        padding-left: 100%;
+    }
+    @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+</style>
+
+<!-- 1. Video Hero Section -->
+<section class="hero-video" style="margin-top: -40px;">
+    <video class="hero-video__bg" autoplay muted loop playsinline>
+        <source src="{{ asset('videos/hero.mp4') }}" type="video/mp4">
+    </video>
+    <div class="hero-video__overlay"></div>
+    
+    <div class="hero-video__content">
+        <div class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 px-3 py-2 rounded-pill mb-4 animate__animated animate__fadeInDown">
+            🏥 Next-Gen Healthcare Platform
+        </div>
+        <h1 class="display-2 fw-bold mb-3 tracking-tighter">{{ system_settings.hospitalName|default('MediCore Hospital') }}</h1>
+        <p class="fs-4 mb-5 mx-auto opacity-75 fw-light" style="max-width: 700px;">
+             Bridging medical expertise with advanced AI technology to provide a seamless health ecosystem for the 21st century.
+        </p>
+        <div class="d-flex justify-content-center gap-4">
+             <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-lg btn-premium-glow fw-bold">
+                  Get Started <i class="bi bi-arrow-right ms-2"></i>
+             </a>
+             <a href="{{ path('app_about') }}" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 border-2">
+                  Our Legacy
+             </a>
+        </div>
+    </div>
+
+    <!-- Floating Stats -->
+    <div class="hero-stats d-none d-lg-block">
+        <div class="row g-4 justify-content-center">
+            <div class="col-auto">
+                <div class="stat-pill">
+                    <i class="bi bi-activity fs-3 text-primary"></i>
+                    <div>
+                        <div class="fw-bold lh-1">100% Secure</div>
+                        <div class="small opacity-75">Encrypted Records</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="stat-pill">
+                    <i class="bi bi-heart-fill fs-3 text-danger"></i>
+                    <div>
+                        <div class="fw-bold lh-1">AI Diagnostics</div>
+                        <div class="small opacity-75">Real-time Analysis</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="stat-pill">
+                    <i class="bi bi-clock-fill fs-3 text-info"></i>
+                    <div>
+                        <div class="fw-bold lh-1">24/7 Access</div>
+                        <div class="small opacity-75">Global Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Shortcut Section -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h6 class="text-primary fw-bold text-uppercase tracking-widest mb-2">Our Healthcare Philosophy</h6>
+            <h2 class="display-5 fw-bold mb-3">Superior Care, Powered by Smart Technology</h2>
+            <div class="mx-auto bg-primary rounded-pill" style="width: 80px; height: 4px;"></div>
+        </div>
+        
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <h6 class="text-primary fw-bold text-uppercase tracking-widest mb-3">Health Innovation</h6>
+                <h2 class="display-5 fw-bold mb-4">Redefining the Standard of Care</h2>
+                <p class="lead text-muted mb-4">
+                    MediCore is not just a hospital; it's a digital-first health infrastructure designed for patients who value time, security, and precision.
+                </p>
+                <div class="d-flex flex-column gap-3 mb-5">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary"><i class="bi bi-check-lg"></i></div>
+                        <span class="fw-semibold">Paperless Medical History Management</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary"><i class="bi bi-check-lg"></i></div>
+                        <span class="fw-semibold">One-Click Specialist Appointment Booking</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary"><i class="bi bi-check-lg"></i></div>
+                        <span class="fw-semibold">AI Integrated Patient Risk Monitoring</span>
+                    </div>
+                </div>
+                <a href="{{ path('app_about') }}" class="btn btn-dark rounded-pill px-5 py-2 fw-bold">Learn More About Us</a>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <div class="glass-card p-3 shadow-lg">
+                        <img src="{{ asset('images/gallery/lobby.png') }}" class="img-fluid rounded-4 shadow" alt="Innovation">
+                    </div>
+                    <div class="position-absolute top-100 start-0 translate-middle-y ms-4 mt-n5 d-none d-md-block">
+                        <div class="glass-card p-4 shadow-lg bg-white bg-opacity-75">
+                            <h5 class="fw-bold mb-1">99.8% Success</h5>
+                            <p class="small text-muted mb-0">Patient Satisfaction Score</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5" style="background: #f1f5f9;">
+    <div class="container py-5 text-center">
+        <h2 class="display-6 fw-bold mb-4">Ready to Experience Modern Healthcare?</h2>
+        <p class="text-muted mb-5 mx-auto" style="max-width: 600px;">Join thousands of patients and medical professionals who trust MediCore for their health management journey.</p>
+        <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm py-3 fw-bold">Login to Your Portal</a>
+    </div>
+</section>
+{% endblock %}

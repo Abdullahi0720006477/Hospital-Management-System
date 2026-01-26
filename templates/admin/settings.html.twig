@@ -1,0 +1,118 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}System Settings | HMS PRO{% endblock %}
+
+{% block admin_stylesheets %}
+<style>
+    .settings-card {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .settings-group {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .settings-group:last-child {
+        border-bottom: none;
+    }
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="dashboard-header mb-4">
+    <h1 class="fw-bold">System Settings</h1>
+    <p class="text-muted">Configure global hospital management parameters</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 shadow-sm">
+            <div class="settings-group">
+                <h5 class="fw-bold mb-3"><i class="bi bi-hospital me-2"></i>General Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Hospital Name</label>
+                        <input type="text" class="form-control rounded-pill" value="St. Mary's General Hospital">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Contact Email</label>
+                        <input type="email" class="form-control rounded-pill" value="admin@hms-pro.com">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2"></i>Security & Access</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="fw-bold">Two-Factor Authentication</div>
+                        <small class="text-muted">Require 2FA for all administrative accounts</small>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="fw-bold">Session Timeout</div>
+                        <small class="text-muted">Automatically log out inactive users after 30 mins</small>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h5 class="fw-bold mb-3"><i class="bi bi-bell me-2"></i>Notifications</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="fw-bold">Email Alerts</div>
+                        <small class="text-muted">Send automated appointment reminders</small>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end pt-3">
+                <button class="btn btn-light rounded-pill px-4 me-2 border">Discard Changes</button>
+                <button class="btn btn-primary rounded-pill px-4" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border: none;">Save Configuration</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass-card p-4 shadow-sm mb-4">
+            <h5 class="fw-bold mb-3">System Status</h5>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="bg-success rounded-circle" style="width: 12px; height: 12px;"></div>
+                <div>
+                    <div class="fw-bold small">Core Engine</div>
+                    <small class="text-muted">Version 2.4.0 (Stable)</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-success rounded-circle" style="width: 12px; height: 12px;"></div>
+                <div>
+                    <div class="fw-bold small">Database Sync</div>
+                    <small class="text-muted">Last sync: 2 mins ago</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-4 border-0" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white;">
+            <h5 class="fw-bold mb-3">Need Support?</h5>
+            <p class="small opacity-75">Our technical team is available 24/7 for system maintenance and troubleshooting.</p>
+            <button class="btn btn-light btn-sm w-100 rounded-pill fw-bold">Open Ticket</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

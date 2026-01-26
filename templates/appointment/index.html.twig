@@ -1,0 +1,335 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block dashboard_title %}Appointments{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* 2026 Premium Appointments Page */
+        .appointments-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-new-appointment {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-new-appointment:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            color: #764ba2;
+        }
+
+        /* Modern Table Styling */
+        .table-glass {
+            border-collapse: separate;
+            border-spacing: 0 0.75rem;
+        }
+
+        .table-glass thead th {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            padding: 1rem 1.5rem;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table-glass thead th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .table-glass thead th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .table-glass tbody tr {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+        }
+
+        .table-glass tbody tr:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.03) 0%, white 100%);
+        }
+
+        .table-glass tbody td {
+            padding: 1.25rem 1.5rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .table-glass tbody td:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .table-glass tbody td:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Status Badges with Gradients */
+        .badge {
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border-radius: 50px;
+            letter-spacing: 0.05em;
+        }
+
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+            box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%) !important;
+            box-shadow: 0 4px 12px rgba(238, 9, 121, 0.3);
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+            box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+        }
+
+        .badge.bg-light {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+            color: #64748b !important;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Action Button Styling */
+        .dropdown-toggle {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white !important;
+            transform: rotate(90deg);
+        }
+
+        .dropdown-menu {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 0.75rem;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .dropdown-item {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-item:hover i {
+            transform: scale(1.2);
+        }
+
+        .dropdown-header {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            padding: 0.5rem 1rem;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Empty State Styling */
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Patient/Doctor Name Styling */
+        .patient-name, .doctor-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .doctor-name::before {
+            content: "Dr. ";
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        /* Date/Time Styling */
+        .appointment-date {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 0.95rem;
+        }
+
+        .appointment-time {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Token Badge */
+        .token-badge {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+    </style>
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="appointments-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-2">📅 Appointment Management</h2>
+                <p class="mb-0 opacity-90">Schedule, track, and manage all patient appointments</p>
+            </div>
+            <a href="{{ path('app_appointment_new') }}" class="btn btn-new-appointment">
+                <i class="bi bi-plus-lg me-2"></i> Book New Appointment
+            </a>
+        </div>
+    </div>
+
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-glass">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Token</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>
+                            <div class="appointment-date">{{ appointment.appointmentDate|date('M d, Y') }}</div>
+                            <small class="appointment-time">{{ appointment.appointmentDate|date('H:i') }}</small>
+                        </td>
+                        <td><span class="badge bg-light token-badge">{{ appointment.tokenNumber }}</span></td>
+                        <td><span class="patient-name">{{ appointment.patient.user.fullName }}</span></td>
+                        <td><span class="doctor-name">{{ appointment.doctor.user.fullName }}</span></td>
+                        <td>
+                            {% set badge_class = 'bg-secondary' %}
+                            {% if appointment.status == 'confirmed' or appointment.status == 'Confirmed' %}{% set badge_class = 'bg-primary' %}
+                            {% elseif appointment.status == 'completed' or appointment.status == 'Completed' %}{% set badge_class = 'bg-success' %}
+                            {% elseif appointment.status == 'cancelled' or appointment.status == 'Cancelled' %}{% set badge_class = 'bg-danger' %}
+                            {% elseif appointment.status == 'Pending' %}{% set badge_class = 'bg-warning' %}
+                            {% endif %}
+                            <span class="badge {{ badge_class }}">{{ appointment.status|capitalize }}</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><h6 class="dropdown-header">Update Status</h6></li>
+                                    <li>
+                                        <form method="post" action="{{ path('app_appointment_status_update', {'id': appointment.id, 'status': 'Confirmed'}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('status' ~ appointment.id) }}">
+                                            <button class="dropdown-item"><i class="bi bi-check-circle me-2 text-primary"></i> Confirm</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="post" action="{{ path('app_appointment_status_update', {'id': appointment.id, 'status': 'Completed'}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('status' ~ appointment.id) }}">
+                                            <button class="dropdown-item"><i class="bi bi-file-check me-2 text-success"></i> Complete</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="post" action="{{ path('app_appointment_status_update', {'id': appointment.id, 'status': 'Cancelled'}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('status' ~ appointment.id) }}">
+                                            <button class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i> Cancel</button>
+                                        </form>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a href="{{ path('app_appointment_edit', {'id': appointment.id}) }}" class="dropdown-item">
+                                            <i class="bi bi-pencil me-2"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('app_appointment_show', {'id': appointment.id}) }}" class="dropdown-item">
+                                            <i class="bi bi-eye me-2"></i> View Details
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="bi bi-calendar-x d-block mb-3"></i>
+                            <h5 class="text-muted">No appointments scheduled yet</h5>
+                            <p class="text-muted small">Click "Book New Appointment" to get started</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

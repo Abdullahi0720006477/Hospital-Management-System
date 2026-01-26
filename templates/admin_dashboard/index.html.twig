@@ -1,0 +1,466 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}Dashboard | {{ system_settings.hospitalName|default('HMS') }}{% endblock %}
+
+{% block admin_stylesheets %}
+<style>
+    .dashboard-header { margin-bottom: 2rem; }
+    .page-title { font-weight: 700; color: #1b2559; margin-bottom: 5px; }
+    .page-subtitle { color: #a3aed0; font-size: 0.9rem; }
+
+    /* Stat Cards matching image style */
+    .stat-card-new {
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .stat-card-new .stat-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        color: white;
+        font-size: 1.25rem;
+    }
+    .stat-card-new .stat-value { font-size: 1.75rem; font-weight: 800; color: #1b2559; margin-bottom: 5px; }
+    .stat-card-new .stat-label { font-size: 0.75rem; color: #a3aed0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+    /* Table & Charts style */
+    .card-title-sm { font-size: 1rem; font-weight: 700; color: #1b2559; margin-bottom: 1.5rem; }
+    .table-sm-custom th { font-size: 0.75rem; color: #a3aed0; text-transform: uppercase; font-weight: 600; padding: 12px; border: none; }
+    .table-sm-custom td { font-size: 0.85rem; padding: 12px; color: #1b2559; border: none; }
+
+    /* Alert and Feed styles */
+    .alert-pill { padding: 6px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .surgery-item { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; }
+    .surgery-item:last-child { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="page-title">{{ system_settings.dashboardTitle|default('Command Center') }}</h2>
+        <p class="page-subtitle">Welcome back, {{ app.user.email }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-light shadow-sm"><i class="bi bi-download me-2"></i>Export Report</button>
+        <button class="btn btn-primary shadow-sm"><i class="bi bi-plus-lg me-2"></i>Quick Add</button>
+    </div>
+</div>
+
+{# Top Row: Key Metrics #}
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="glass-card stat-card-new">
+            <div class="stat-icon-box" style="background: linear-gradient(135deg, #4cc9f0, #4895ef);"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value">{{ patient_count }}</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card-new">
+            <div class="stat-icon-box" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);"><i class="bi bi-person-badge-fill"></i></div>
+            <div class="stat-value">{{ doctor_count }}</div>
+            <div class="stat-label">Active Doctors</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card-new">
+            <div class="stat-icon-box" style="background: linear-gradient(135deg, #3f37c9, #7209b7);"><i class="bi bi-calendar-event-fill"></i></div>
+            <div class="stat-value">{{ appointment_count }}</div>
+            <div class="stat-label">Appointments</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card-new">
+            <div class="stat-icon-box" style="background: linear-gradient(135deg, #f72585, #b5179e);"><i class="bi bi-building-fill"></i></div>
+            <div class="stat-value">{{ department_count }}</div>
+            <div class="stat-label">Departments</div>
+        </div>
+    </div>
+</div>
+
+{# Main Resource Management Section #}
+<div class="row g-4 mb-4">
+    <div class="col-lg-9">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="card-title-sm mb-0">Master Records View</h5>
+                <ul class="nav nav-pills small" id="resourceTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill px-3" id="doctors-tab" data-bs-toggle="tab" data-bs-target="#doctors" type="button">Doctors</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-3" id="patients-tab" data-bs-toggle="tab" data-bs-target="#patients" type="button">Patients</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-3" id="departments-tab" data-bs-toggle="tab" data-bs-target="#departments" type="button">Departments</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-3" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button">System Logs</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="resourceTabsContent">
+                {# Doctors Tab #}
+                <div class="tab-pane fade show active" id="doctors" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm-custom table-hover">
+                            <thead>
+                                <tr><th>Name</th><th>Specialization</th><th>Department</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for doctor in latest_doctors %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="avatar-premium bg-primary text-white" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                    {{ doctor.user.firstName|default('D')|slice(0,1) }}
+                                                </div>
+                                                <div class="fw-bold">{{ doctor.user.fullName }}</div>
+                                            </div>
+                                        </td>
+                                        <td>{{ doctor.specialization }}</td>
+                                        <td><span class="badge bg-light text-dark border">{{ doctor.department.name|default('General') }}</span></td>
+                                        <td>
+                                            <a href="{{ path('app_doctor_show', {'id': doctor.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm"><i class="bi bi-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="4" class="text-center py-4 text-muted">No doctors found.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3 border-top pt-3">
+                            <a href="{{ path('app_doctor_index') }}" class="btn btn-link text-decoration-none small fw-bold">View All Doctors <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Patients Tab #}
+                <div class="tab-pane fade" id="patients" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm-custom table-hover">
+                            <thead>
+                                <tr><th>Name</th><th>Phone</th><th>Gender</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for patient in latest_patients %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="avatar-premium bg-success text-white" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                    {{ patient.user.firstName|default('P')|slice(0,1) }}
+                                                </div>
+                                                <div class="fw-bold">{{ patient.user.fullName }}</div>
+                                            </div>
+                                        </td>
+                                        <td>{{ patient.phone }}</td>
+                                        <td>{{ patient.gender }}</td>
+                                        <td>
+                                            <a href="{{ path('app_patient_show', {'id': patient.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm"><i class="bi bi-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="4" class="text-center py-4 text-muted">No patients found.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3 border-top pt-3">
+                            <a href="{{ path('app_patient_index') }}" class="btn btn-link text-decoration-none small fw-bold">View All Patients <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Departments Tab #}
+                <div class="tab-pane fade" id="departments" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm-custom table-hover">
+                            <thead>
+                                <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in departments|slice(0,5) %}
+                                    <tr>
+                                        <td class="fw-bold text-primary">{{ dept.name }}</td>
+                                        <td class="text-muted small">{{ dept.description|slice(0, 50) }}...</td>
+                                        <td>
+                                            <a href="{{ path('app_department_show', {'id': dept.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm"><i class="bi bi-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="3" class="text-center py-4 text-muted">No departments found.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {# System Logs Tab #}
+                <div class="tab-pane fade" id="logs" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm-custom table-hover">
+                            <thead>
+                                <tr><th>User</th><th>Action</th><th>IP</th><th>Time</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for log in latest_logs %}
+                                    <tr>
+                                        <td><span class="fw-bold small">{{ log.performedBy }}</span></td>
+                                        <td>
+                                            {% set badge_class = 'bg-primary' %}
+                                            {% if log.action == 'LOGIN' %}{% set badge_class = 'bg-success' %}
+                                            {% elseif log.action == 'DELETE' %}{% set badge_class = 'bg-danger' %}
+                                            {% endif %}
+                                            <span class="badge {{ badge_class }} bg-opacity-10 text-{{ badge_class == 'bg-primary' ? 'primary' : (badge_class == 'bg-success' ? 'success' : 'danger') }}" style="font-size: 0.65rem;">{{ log.action }}</span>
+                                        </td>
+                                        <td class="small">{{ log.ipAddress }}</td>
+                                        <td class="small text-muted">{{ log.createdAt|date('H:i') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="4" class="text-center py-4 text-muted">No logs recorded yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3 border-top pt-3">
+                            <a href="{{ path('app_admin_audit_logs') }}" class="btn btn-link text-decoration-none small fw-bold">View Full Audit Log <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Quick Actions & Activity #}
+    <div class="col-lg-3">
+        <div class="glass-card p-4 h-100">
+            <h5 class="card-title-sm">System Pulse</h5>
+            <div style="height: 100px;">
+                <canvas id="quickLinksChart"></canvas>
+            </div>
+            
+            <h5 class="card-title-sm mt-4">Quick Actions</h5>
+            <div class="d-grid gap-2 mb-4">
+                <a href="{{ path('app_doctor_new') }}" class="btn btn-primary btn-sm rounded-3 py-2">
+                    <i class="bi bi-person-plus-fill me-2"></i>Add Doctor
+                </a>
+                <a href="{{ path('app_patient_new') }}" class="btn btn-success btn-sm rounded-3 py-2">
+                    <i class="bi bi-person-add me-2"></i>Register Patient
+                </a>
+            </div>
+
+            <h5 class="card-title-sm mt-4">Department Satisfaction</h5>
+            <div style="height: 150px;">
+                <canvas id="satisfactionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Deep Analytics Section #}
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="card-title-sm mb-0">Operational Heatmap & Wait Times</h5>
+                <span class="badge bg-primary bg-opacity-10 text-primary">Live Insights</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="small text-muted mb-3 text-center">Avg. Wait Time by Dept (Min)</p>
+                    <canvas id="waitTimeChart" height="200"></canvas>
+                </div>
+                <div class="col-md-6 border-start">
+                    <p class="small text-muted mb-3 text-center">Patient Inflow (OPD vs ER)</p>
+                    <canvas id="heatmapChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <h5 class="card-title-sm">Facility Bed Occupancy</h5>
+            <div style="height: 180px;" class="mb-4">
+                <canvas id="bedUsageChart"></canvas>
+            </div>
+            
+            <h5 class="card-title-sm mt-4">Critical Status</h5>
+            {% for alert in critical_alerts %}
+                <div class="alert-pill" style="background: {{ alert.level == 'critical' ? '#fff5f5' : '#fff9e6' }}; color: {{ alert.level == 'critical' ? '#ff5c5c' : '#ffcc00' }};">
+                    <i class="bi {{ alert.icon }}"></i> {{ alert.msg }}
+                </div>
+            {% else %}
+                <div class="alert-pill" style="background: #f0fdf4; color: #15803d;">
+                    <i class="bi bi-check-circle-fill"></i> Infrastructure optimal.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Theme-Aware Chart Colors
+    const getComputedStyleVar = (name) => {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    };
+
+    const updateChartTheme = () => {
+        const isDark = document.body.classList.contains('dark-mode');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+        
+        Chart.defaults.color = textColor;
+        Chart.defaults.scale.grid.color = gridColor;
+        
+        // Update all charts if they exist
+        Chart.instances.forEach(chart => chart.update());
+    };
+
+    // Listen for theme changes (custom event or observer)
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                updateChartTheme();
+            }
+        });
+    });
+    observer.observe(document.body, { attributes: true });
+
+    // Initial Theme Setup
+    updateChartTheme();
+
+    // Management Quick Links Chart (Area)
+    new Chart(document.getElementById('quickLinksChart'), {
+        type: 'line',
+        data: {
+            labels: ['10d', '9d', '8d', '7d', '6d', '5d', '4d', '3d', '2d', 'Now'],
+            datasets: [{
+                label: 'Appointments',
+                data: {{ activity_data|json_encode|raw }},
+                borderColor: '#4361ee',
+                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { x: { display: false }, y: { display: false } },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Wait Time Chart (Bar)
+    new Chart(document.getElementById('waitTimeChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ dept_performances|map(p => p.name)|json_encode|raw }},
+            datasets: [{
+                data: {{ dept_performances|map(p => p.wait_time)|json_encode|raw }},
+                backgroundColor: '#4361ee',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Satisfaction Chart (Grouped Bar)
+    new Chart(document.getElementById('satisfactionChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ dept_performances|map(p => p.name)|json_encode|raw }},
+            datasets: [
+                { 
+                    label: 'Actual',
+                    data: {{ dept_performances|map(p => p.satisfaction)|json_encode|raw }}, 
+                    backgroundColor: '#05cd99', 
+                    borderRadius: 5 
+                },
+                { 
+                    label: 'Target',
+                    data: Array(6).fill(90), 
+                    backgroundColor: 'rgba(5, 205, 153, 0.2)', 
+                    borderRadius: 5 
+                }
+            ]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true, max: 100 } },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Patient Flow (Horizontal Stacked Bar)
+    new Chart(document.getElementById('heatmapChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                { label: 'OPD', data: {{ patient_flow.opd|json_encode|raw }}, backgroundColor: 'rgba(67, 97, 238, 0.2)' },
+                { label: 'Emergency', data: {{ patient_flow.emergency|json_encode|raw }}, backgroundColor: '#4361ee' }
+            ]
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: { 
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, grid: { display: false } }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Bed Usage Chart with AI Forecast
+    new Chart(document.getElementById('bedUsageChart'), {
+        type: 'line',
+        data: {
+            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '23:59'],
+            datasets: [
+                {
+                    label: 'Actual',
+                    data: {{ bed_usage|json_encode|raw }},
+                    borderColor: '#4361ee',
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'AI Forecast',
+                    data: {{ bed_usage|map(v => (v * 1.15)|round)|json_encode|raw }},
+                    borderColor: '#ff9f1c',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { 
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, max: 100 }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block dashboard_title %}Appointment Calendar{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Schedule View</h4>
+            <div>
+                <a href="{{ path('app_appointment_index') }}" class="btn btn-light rounded-pill shadow-sm me-2">
+                    <i class="bi bi-list-ul me-1"></i> List View
+                </a>
+                <a href="{{ path('app_appointment_new') }}" class="btn btn-primary rounded-pill shadow-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Book Appointment
+                </a>
+            </div>
+        </div>
+
+        <div class="glass-card p-4">
+            <div id="calendar" class="h-100"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Appointment Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-bottom-0 bg-light">
+                <h5 class="modal-title fw-bold text-primary">Appointment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-circle bg-primary bg-opacity-10 text-primary me-3 p-2 rounded-circle">
+                        <i class="bi bi-person-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <label class="small text-muted text-uppercase fw-bold">Patient</label>
+                        <h6 class="mb-0 fw-bold" id="modalPatient"></h6>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-circle bg-success bg-opacity-10 text-success me-3 p-2 rounded-circle">
+                         <i class="bi bi-heart-pulse-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <label class="small text-muted text-uppercase fw-bold">Doctor</label>
+                        <h6 class="mb-0 fw-bold" id="modalDoctor"></h6>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <small class="text-muted d-block text-uppercase fw-bold mb-1">Time</small>
+                        <p class="mb-0 border rounded p-2 bg-light"><i class="bi bi-clock me-1"></i> <span id="modalTime"></span></p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block text-uppercase fw-bold mb-1">Status</small>
+                        <span id="modalStatus" class="badge rounded-pill fs-6 mt-1"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0">
+                <a href="#" id="modalViewBtn" class="btn btn-primary rounded-pill px-4">View Full Details</a>
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+    <style>
+        #calendar { min-height: 750px; }
+        .fc-event { cursor: pointer; border: none !important; border-radius: 6px; padding: 2px 4px; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .fc-toolbar-title { font-size: 1.5rem !important; font-weight: 700; color: #4e73df; }
+        .fc-button { border-radius: 50px !important; text-transform: capitalize; font-weight: 600; }
+        .fc-daygrid-day.fc-day-today { background-color: rgba(78, 115, 223, 0.05) !important; }
+        .modal-content { overflow: hidden; }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: {{ events|json_encode|raw }},
+            eventClick: function(info) {
+                const props = info.event.extendedProps;
+                document.getElementById('modalPatient').textContent = props.patient;
+                document.getElementById('modalDoctor').textContent = props.doctor;
+                document.getElementById('modalTime').textContent = info.event.start.toLocaleString();
+                document.getElementById('modalStatus').textContent = props.status;
+                document.getElementById('modalStatus').className = 'badge ' + (props.status === 'confirmed' ? 'bg-primary' : 'bg-secondary');
+                document.getElementById('modalViewBtn').href = '/appointment/' + info.event.id;
+                modal.show();
+            }
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %}

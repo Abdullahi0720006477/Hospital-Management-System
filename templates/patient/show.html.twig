@@ -1,0 +1,156 @@
+{% extends 'page_layout.html.twig' %}
+
+{% block page_title %}Patient Details{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_patient_index') }}">Patients</a></li>
+    <li class="breadcrumb-item active" aria-current="page">#{{ patient.id }}</li>
+{% endblock %}
+
+{% block page_actions %}
+    <div class="dropdown">
+        <button class="btn btn-glass dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-gear me-2"></i>Actions
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li><a class="dropdown-item" href="{{ path('app_patient_edit', {'id': patient.id}) }}"><i class="bi bi-pencil me-2"></i>Edit Patient</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                {{ include('patient/_delete_form.html.twig') }}
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block page_content %}
+<div class="row g-4">
+    <!-- Left Column: Profile -->
+    <div class="col-lg-4">
+        <div class="glass-card text-center h-100">
+            <div class="position-relative d-inline-block mb-3">
+                {% if patient.profilePicture %}
+                    <img src="{{ patient.profilePicture }}" class="rounded-circle shadow-sm" width="120" height="120" style="object-fit: cover;" alt="Profile">
+                {% else %}
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto text-primary fw-bold" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ patient.user.fullName|slice(0, 1)|upper }}
+                    </div>
+                {% endif %}
+                <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-light rounded-circle"></span>
+            </div>
+            
+            <h4 class="fw-bold mb-1">{{ patient.user.fullName }}</h4>
+            <p class="text-muted mb-3">{{ patient.user.email }}</p>
+            
+            <div class="d-flex justify-content-center gap-2 mb-4">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary border-opacity-25">
+                    <i class="bi bi-person-vcard me-1"></i> ID: #{{ patient.id }}
+                </span>
+                <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill border border-danger border-opacity-25">
+                    <i class="bi bi-droplet me-1"></i> {{ patient.bloodGroup }}
+                </span>
+            </div>
+
+            <hr class="border-secondary opacity-25">
+
+            <div class="text-start">
+                <div class="mb-3">
+                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Phone</small>
+                    <div class="fw-medium"><i class="bi bi-telephone me-2 text-primary"></i> <a href="tel:{{ patient.phone }}" class="text-decoration-none text-dark">{{ patient.phone }}</a></div>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Date of Birth</small>
+                    <div class="fw-medium"><i class="bi bi-calendar-event me-2 text-primary"></i> {{ patient.dateOfBirth ? patient.dateOfBirth|date('M d, Y') : 'N/A' }}</div>
+                </div>
+                <div class="mb-0">
+                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Address</small>
+                    <div class="fw-medium"><i class="bi bi-geo-alt me-2 text-primary"></i> {{ patient.address ?: 'No address provided' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Details -->
+    <div class="col-lg-8">
+        <!-- Medical & Emergency -->
+        <div class="glass-card mb-4">
+            <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-clipboard-pulse me-2"></i>Medical Info</h5>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-light bg-opacity-50 border border-light h-100">
+                        <label class="small text-muted text-uppercase fw-bold mb-2">Allergies / Conditions</label>
+                        <p class="mb-0 text-dark">{{ patient.allergies ?: 'No known allergies reported.' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-light bg-opacity-50 border border-light h-100">
+                        <label class="small text-muted text-uppercase fw-bold mb-2">Emergency Contact</label>
+                        {% if patient.emergencyContactName %}
+                            <div class="mb-1 fw-bold">{{ patient.emergencyContactName }}</div>
+                            <a href="tel:{{ patient.emergencyContactPhone }}" class="text-decoration-none text-primary">
+                                <i class="bi bi-telephone-fill me-1 small"></i> {{ patient.emergencyContactPhone }}
+                            </a>
+                        {% else %}
+                            <p class="mb-0 text-muted fst-italic">Not provided</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0 text-primary"><i class="bi bi-clock-history me-2"></i>Appointment History</h5>
+                <a href="{{ path('app_appointment_new') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                    <i class="bi bi-plus-lg me-1"></i> Book New
+                </a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-glass mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for appointment in patient.appointments %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ appointment.appointmentDate|date('M d, Y') }}</div>
+                                <small class="text-muted">{{ appointment.appointmentDate|date('H:i') }}</small>
+                            </td>
+                            <td>Dr. {{ appointment.doctor.user.lastName }}</td>
+                            <td>{{ appointment.doctor.department.name }}</td>
+                            <td>
+                                {% set badge_class = 'bg-secondary' %}
+                                {% if 'onfirmed' in appointment.status %}{% set badge_class = 'bg-primary' %}
+                                {% elseif 'ompleted' in appointment.status %}{% set badge_class = 'bg-success' %}
+                                {% elseif 'ancelled' in appointment.status %}{% set badge_class = 'bg-danger' %}
+                                {% endif %}
+                                <span class="badge {{ badge_class }} rounded-pill">{{ appointment.status|capitalize }}</span>
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ path('app_appointment_show', {'id': appointment.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                No appointment history found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

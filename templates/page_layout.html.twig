@@ -1,0 +1,32 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block page_title %}{% block title %}{% endblock %}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold text-dark mb-1">{% block page_heading %}{{ block('page_title') }}{% endblock %}</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_dashboard') }}" class="text-decoration-none">Dashboard</a>
+                    {% elseif is_granted('ROLE_DOCTOR') %}
+                        <a href="{{ path('app_doctor_dashboard') }}" class="text-decoration-none">Dashboard</a>
+                    {% else %}
+                        <a href="{{ path('app_patient_dashboard') }}" class="text-decoration-none">Dashboard</a>
+                    {% endif %}
+                </li>
+                {% block breadcrumbs %}{% endblock %}
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-6 text-md-end">
+        {% block page_actions %}{% endblock %}
+    </div>
+</div>
+
+<div class="animate-fade-in">
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}

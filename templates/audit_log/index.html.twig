@@ -1,0 +1,83 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}Audit Logs | {{ system_settings.hospitalName|default('HMS') }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="page-title">Security & Audit Logs</h2>
+        <p class="page-subtitle">Real-time tracking of all administrative and system-wide activities.</p>
+    </div>
+    <button class="btn btn-light shadow-sm rounded-pill px-4"><i class="bi bi-download me-2"></i>Export Logs</button>
+</div>
+
+<div class="glass-card p-0 overflow-hidden border-0 shadow-sm animate__animated animate__fadeIn">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle m-0" style="border-collapse: separate; border-spacing: 0;">
+            <thead class="bg-light">
+                <tr class="text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; color: #64748b;">
+                    <th class="ps-4 py-3">Timestamp</th>
+                    <th class="py-3">User Account</th>
+                    <th class="py-3">Action Type</th>
+                    <th class="py-3">Network Origin</th>
+                    <th class="py-3 pe-4">Detailed Description</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 0.85rem;">
+                {% for log in logs %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-dark">{{ log.createdAt|date('M d, Y') }}</span>
+                                <small class="text-muted">{{ log.createdAt|date('H:i:s') }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="avatar-premium bg-primary text-white shadow-sm" style="width: 32px; height: 32px; font-size: 0.75rem;">
+                                    {{ log.performedBy|slice(0,1)|upper }}
+                                </div>
+                                <span class="fw-semibold text-primary">{{ log.performedBy }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% set badge_class = 'bg-secondary' %}
+                            {% set text_color = 'secondary' %}
+                            {% if log.action == 'LOGIN' %}
+                                {% set badge_class = 'bg-success' %}{% set text_color = 'success' %}
+                            {% elseif log.action == 'LOGOUT' %}
+                                {% set badge_class = 'bg-info' %}{% set text_color = 'info' %}
+                            {% elseif log.action starts with 'CREATE' %}
+                                {% set badge_class = 'bg-primary' %}{% set text_color = 'primary' %}
+                            {% elseif log.action starts with 'DELETE' %}
+                                {% set badge_class = 'bg-danger' %}{% set text_color = 'danger' %}
+                            {% elseif log.action starts with 'UPDATE' %}
+                                {% set badge_class = 'bg-warning' %}{% set text_color = 'warning' %}
+                            {% endif %}
+                            <span class="badge {{ badge_class }} bg-opacity-10 text-{{ text_color }} px-3 py-2 rounded-pill" style="font-size: 0.65rem; font-weight: 700;">
+                                <i class="bi bi-dot me-1"></i>{{ log.action }}
+                            </span>
+                        </td>
+                        <td>
+                            <code class="small text-muted bg-light px-2 py-1 rounded">{{ log.ipAddress }}</code>
+                        </td>
+                        <td class="pe-4 text-muted fst-italic">
+                            {{ log.description|default('No additional data.') }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="py-5 opacity-50">
+                                <i class="bi bi-shield-lock-fill display-1 text-light mb-3 d-block"></i>
+                                <h5 class="text-muted">No security logs are currently recorded</h5>
+                                <p class="small">Administrative activities will appear here in real-time.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'page_layout.html.twig' %}
+
+{% block page_title %}Register Patient{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_patient_index') }}">Patients</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New</li>
+{% endblock %}
+
+{% block page_actions %}{% endblock %}
+
+{% block page_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="glass-card p-5">
+            {# We use one form tag to submit both sets of data. We use patientForm to generate the tag. #}
+            {{ form_start(patientForm) }}
+                
+                {# User Account Section #}
+                <div class="mb-5">
+                    <h5 class="fw-bold text-primary mb-4"><i class="bi bi-shield-lock me-2"></i>Account Information</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            {{ form_label(userForm.fullName, 'Full Name', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(userForm.fullName, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'Enter full name'}}) }}
+                            {{ form_errors(userForm.fullName) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(userForm.email, 'Email Address', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(userForm.email, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'name@example.com'}}) }}
+                            {{ form_errors(userForm.email) }}
+                        </div>
+                        <div class="col-12">
+                             {{ form_label(userForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(userForm.plainPassword, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'Create a secure password'}}) }}
+                             {{ form_errors(userForm.plainPassword) }}
+                             <div class="form-text mt-2"><i class="bi bi-info-circle me-1"></i> Minimum 6 characters</div>
+                        </div>
+                    </div>
+                    {# Ensure User Form CSRF token is rendered #}
+                    {{ form_rest(userForm) }}
+                </div>
+
+                <hr class="my-5 border-secondary opacity-25">
+
+                {# Patient Details Section #}
+                <div>
+                    <h5 class="fw-bold text-primary mb-4"><i class="bi bi-person-vcard me-2"></i>Personal Details</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                             {{ form_label(patientForm.dateOfBirth, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.dateOfBirth, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                             {{ form_label(patientForm.phone, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.phone, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                        </div>
+                        <div class="col-12">
+                             {{ form_label(patientForm.address, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.address, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'rows': '3'}}) }}
+                        </div>
+                         <div class="col-md-6">
+                             {{ form_label(patientForm.bloodGroup, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.bloodGroup, {'attr': {'class': 'form-select rounded-3 bg-light border-0 p-3'}}) }}
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-primary mb-4 mt-5"><i class="bi bi-heart-pulse me-2"></i>Medical & Emergency</h5>
+                    <div class="row g-4">
+                        <div class="col-12">
+                             {{ form_label(patientForm.allergies, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.allergies, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'rows': '2', 'placeholder': 'List any known allergies'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                             {{ form_label(patientForm.emergencyContactName, 'Emergency Contact Name', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.emergencyContactName, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                             {{ form_label(patientForm.emergencyContactPhone, 'Emergency Phone', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                             {{ form_widget(patientForm.emergencyContactPhone, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_patient_index') }}" class="btn btn-light rounded-pill px-4 shadow-sm text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Schedule
+                    </a>
+                    <button class="btn btn-primary rounded-pill px-5 py-3 shadow-lg fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> Complete Registration
+                    </button>
+                </div>
+            {{ form_end(patientForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

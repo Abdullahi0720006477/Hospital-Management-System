@@ -1,0 +1,668 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block title %}Doctor Dashboard | Dr. {{ doctor.user.fullName }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* 2026 Premium Design System */
+        :root {
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --gradient-danger: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+            --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --neon-blue: #00d4ff;
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+        }
+
+        /* Ultra-Modern Hero with Animated Background */
+        .doctor-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            border-radius: 28px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .doctor-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .doctor-hero::after {
+            content: '';
+            position: absolute;
+            right: -100px;
+            top: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* Premium Glass Cards with Neon Accents */
+        .stat-card-doc {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card-doc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card-doc:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1),
+                        0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-card-doc:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon-doc {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.5rem;
+            color: white;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card-doc:hover .stat-icon-doc {
+            transform: rotateY(360deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon-doc::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card-doc:hover .stat-icon-doc::after {
+            opacity: 1;
+        }
+
+        /* Modern Chart Containers */
+        .chart-container-doc {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06),
+                        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .chart-container-doc:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+        }
+
+        /* Premium Quick Actions */
+        .quick-action-doc {
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: #2b2d42;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-doc::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .quick-action-doc:hover {
+            background: white;
+            transform: translateX(8px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .quick-action-doc:hover::before {
+            transform: scaleY(1);
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-doc:hover .quick-action-icon {
+            transform: rotate(360deg) scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Enhanced Table Styling */
+        .table-hover tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table-hover tbody tr:hover {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+            transform: translateX(4px);
+        }
+
+        /* Risk Score Progress Bar Enhancement */
+        .progress {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .progress-bar {
+            transition: width 0.6s ease, background-color 0.3s ease;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            to { left: 100%; }
+        }
+
+        /* Clinical Alert Cards */
+        .alert {
+            border: none;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Neon Glow Effect for High Priority Items */
+        .text-danger {
+            text-shadow: 0 0 10px rgba(238, 9, 121, 0.3);
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%) !important;
+        }
+
+        /* Smooth Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--neon-purple), var(--neon-pink));
+        }
+
+        /* Badge Enhancements */
+        .badge {
+            font-weight: 600;
+            padding: 0.5em 1em;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Avatar Box Enhancement */
+        .avatar-box {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Stat Card Typography */
+        .stat-card-doc h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-card-doc .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+        }
+
+        /* Floating Animation for Cards */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .glass-card {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .glass-card:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .glass-card:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        .glass-card:nth-child(4) {
+            animation-delay: 3s;
+        }
+    </style>
+{% endblock %}
+
+{% block dashboard_content %}
+    {# Hero Section #}
+    <div class="doctor-hero">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="mb-2">
+                    <span class="badge bg-white bg-opacity-20 text-white px-3 py-2 rounded-pill" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;">
+                        <i class="bi bi-calendar-check me-1"></i> {{ "now"|date("l, F j, Y") }}
+                    </span>
+                </div>
+                <h1 class="fw-bold mb-3" style="font-size: 2.5rem; letter-spacing: -0.02em;">
+                    {% set hour = "now"|date("H") %}
+                    {% if hour < 12 %}
+                        Good Morning
+                    {% elseif hour < 17 %}
+                        Good Afternoon
+                    {% else %}
+                        Good Evening
+                    {% endif %}, Dr. {{ doctor.user.fullName }}! 👋
+                </h1>
+                <p class="mb-0 opacity-90" style="font-size: 1.1rem; line-height: 1.6;">
+                    You have <strong>{{ pending_count }}</strong> pending appointments today. 
+                    {% if pending_count > 0 %}
+                        <span class="d-inline-block mt-2">
+                            <i class="bi bi-clock-history me-1"></i> Your next patient is arriving soon.
+                        </span>
+                    {% else %}
+                        <span class="d-inline-block mt-2">
+                            <i class="bi bi-check-circle me-1"></i> All caught up!
+                        </span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <div class="d-inline-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3 bg-white bg-opacity-20 px-4 py-3 rounded-4" style="backdrop-filter: blur(10px);">
+                        <i class="bi bi-star-fill text-warning" style="font-size: 1.5rem;"></i>
+                        <div class="text-start">
+                            <div class="fw-bold" style="font-size: 1.5rem; line-height: 1;">{{ satisfaction_score }}%</div>
+                            <div class="small opacity-75">Satisfaction Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Top Metrics #}
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="glass-card stat-card-doc">
+                <div class="stat-icon-doc" style="background: linear-gradient(135deg, #4cc9f0 0%, #3b82f6 100%);"><i class="bi bi-people-fill"></i></div>
+                <h3>{{ total_appointments }}</h3>
+                <span class="stat-label">Total Patients</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stat-card-doc">
+                <div class="stat-icon-doc" style="background: linear-gradient(135deg, #ff9f1c 0%, #f59e0b 100%);"><i class="bi bi-hourglass-split"></i></div>
+                <h3>{{ pending_count }}</h3>
+                <span class="stat-label">Pending Visits</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stat-card-doc">
+                <div class="stat-icon-doc" style="background: linear-gradient(135deg, #05cd99 0%, #10b981 100%);"><i class="bi bi-cash-stack"></i></div>
+                <h3>${{ monthly_earnings|number_format(2) }}</h3>
+                <span class="stat-label">Monthly Earnings</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stat-card-doc">
+                <div class="stat-icon-doc" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><i class="bi bi-shield-check"></i></div>
+                <h3>Active</h3>
+                <span class="stat-label">Status</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        {# Workload Chart #}
+        <div class="col-lg-8">
+            <div class="chart-container-doc">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Weekly Workload</h5>
+                    <select class="form-select form-select-sm w-auto border-0 bg-light">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                    </select>
+                </div>
+                <canvas id="workloadChart" height="280"></canvas>
+            </div>
+        </div>
+
+        {# Patient Types Chart #}
+        <div class="col-lg-4">
+            <div class="chart-container-doc">
+                <h5 class="fw-bold mb-4">Patient Distribution</h5>
+                <canvas id="patientDistributionChart" height="220"></canvas>
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted"><i class="bi bi-circle-fill text-primary me-2"></i>New Patients</span>
+                        <span class="fw-bold">{{ patient_types.new }}%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted"><i class="bi bi-circle-fill text-info me-2"></i>Follow-ups</span>
+                        <span class="fw-bold">{{ patient_types.followup }}%</span>
+                    </div>
+                     <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted"><i class="bi bi-circle-fill text-danger me-2"></i>Emergencies</span>
+                        <span class="fw-bold">{{ patient_types.emergency }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Today's Schedule #}
+        <div class="col-lg-8">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Recent Appointments</h5>
+                    <a href="{{ path('app_appointment_index') }}" class="btn btn-sm text-primary fw-bold text-decoration-none">View Full Schedule</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="bg-light bg-opacity-50">
+                            <tr>
+                                <th class="border-0 small fw-bold text-muted text-uppercase">Time</th>
+                                <th class="border-0 small fw-bold text-muted text-uppercase">Patient</th>
+                                <th class="border-0 small fw-bold text-muted text-uppercase">Type</th>
+                                <th class="border-0 small fw-bold text-muted text-uppercase">Risk Score</th>
+                                <th class="border-0 small fw-bold text-muted text-uppercase">Status</th>
+                                <th class="border-0 small fw-bold text-muted text-uppercase text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app_data in appointments %}
+                                {% set appointment = app_data.entity %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ appointment.appointmentDate|date('H:i') }}</div>
+                                        <div class="small text-muted">{{ appointment.appointmentDate|date('M d') }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="avatar-box bg-light text-dark shadow-sm" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                {{ appointment.patient.user.fullName|slice(0, 1)|upper }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">{{ appointment.patient.user.fullName }}</div>
+                                                <small class="text-muted">ID: #{{ appointment.patient.id }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="small text-muted">{{ appointment.notes|default('General Consultation') }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress flex-grow-1" style="height: 6px; width: 60px; background: rgba(0,0,0,0.05);">
+                                                <div class="progress-bar bg-{{ app_data.risk.color }}" role="progressbar" style="width: {{ (app_data.risk.score / 15 * 100)|round }}%"></div>
+                                            </div>
+                                            <span class="small fw-bold text-{{ app_data.risk.color }}">{{ app_data.risk.level }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% set status_class = 'bg-warning' %}
+                                        {% if appointment.status == 'completed' %}{% set status_class = 'bg-success' %}
+                                        {% elseif appointment.status == 'confirmed' %}{% set status_class = 'bg-primary' %}
+                                        {% elseif appointment.status == 'cancelled' %}{% set status_class = 'bg-danger' %}
+                                        {% endif %}
+                                        <span class="badge rounded-pill {{ status_class }} bg-opacity-10 text-{{ status_class == 'bg-primary' ? 'primary' : (status_class == 'bg-success' ? 'success' : (status_class == 'bg-danger' ? 'danger' : 'warning')) }}" style="font-weight: 600;">{{ appointment.status|capitalize }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            {% if appointment.status != 'completed' and appointment.status != 'cancelled' %}
+                                                <form action="{{ path('app_appointment_status_update', {id: appointment.id, status: 'completed'}) }}" method="POST" class="d-inline">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('status' ~ appointment.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Mark as Completed">
+                                                        <i class="bi bi-check2-circle text-success"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            <a href="{{ path('app_medical_record_new', {appointment: appointment.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Add Medical Record">
+                                                <i class="bi bi-file-earmark-plus text-primary"></i>
+                                            </a>
+                                            <a href="{{ path('app_appointment_show', {id: appointment.id}) }}" class="btn btn-sm btn-light rounded-circle shadow-sm" title="View Details">
+                                                <i class="bi bi-eye text-muted"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">No appointments found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {# Quick Actions #}
+        <div class="col-lg-4">
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-4">Quick Actions</h5>
+                <a href="{{ path('app_appointment_calendar') }}" class="quick-action-doc mb-3">
+                    <div class="quick-action-icon text-primary"><i class="bi bi-calendar-range"></i></div>
+                    <div class="fw-bold">View Full Calendar</div>
+                </a>
+                <a href="{{ path('app_medical_record_index') }}" class="quick-action-doc mb-3">
+                    <div class="quick-action-icon text-success"><i class="bi bi-journal-medical"></i></div>
+                    <div class="fw-bold">Search Patient Records</div>
+                </a>
+                <a href="{{ path('app_doctor_edit', {id: doctor.id}) }}" class="quick-action-doc mb-3">
+                    <div class="quick-action-icon text-warning"><i class="bi bi-gear"></i></div>
+                    <div class="fw-bold">Profile Settings</div>
+                </a>
+                
+                <h5 class="fw-bold mb-4 mt-5">Recent Records</h5>
+                {% for record in recent_records %}
+                    <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3 hover-bg-light">
+                        <div class="avatar-box bg-primary bg-opacity-10 text-primary" style="width: 38px; height: 38px; min-width: 38px;">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="fw-bold text-truncate small">{{ record.patient.user.fullName }}</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">{{ record.createdAt|date('M d, Y') }}</div>
+                        </div>
+                        <a href="{{ path('app_medical_record_show', {id: record.id}) }}" class="btn btn-sm btn-link p-0 text-decoration-none">
+                            <i class="bi bi-chevron-right small"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <p class="small text-muted text-center py-3">No recent records.</p>
+                {% endfor %}
+
+                <h5 class="fw-bold mb-4 mt-5">Clinical Alerts (AI)</h5>
+                {% set alert_found = false %}
+                {% for app_data in appointments %}
+                    {% if app_data.risk.score >= 5 %}
+                        {% set alert_found = true %}
+                        <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 d-flex gap-3 mb-3 p-3 rounded-4">
+                            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                            <div>
+                                <div class="fw-bold small">{{ app_data.entity.patient.user.fullName }}</div>
+                                <div class="small opacity-75">High NEWS2 Score: {{ app_data.risk.score }}. {{ app_data.risk.alerts|join(', ') }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if not alert_found %}
+                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-4 mb-4 text-center small">
+                        <i class="bi bi-check-circle-fill me-2"></i>All patients currently stable.
+                    </div>
+                {% endif %}
+
+                <div class="bg-light rounded-4 p-4 mt-4">
+                    <h6 class="fw-bold small text-muted text-uppercase mb-3">Department Alerts</h6>
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <i class="bi bi-info-circle text-info mt-1"></i>
+                        <p class="small mb-0">New guidelines for {{ doctor.department.name }} have been published.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Workload Chart
+    new Chart(document.getElementById('workloadChart'), {
+        type: 'line',
+        data: {
+            labels: {{ workload_labels|json_encode|raw }},
+            datasets: [{
+                label: 'Patients Seen',
+                data: {{ workload_data|json_encode|raw }},
+                borderColor: '#4361ee',
+                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { borderDash: [5, 5] } }
+            }
+        }
+    });
+
+    // Patient Distribution Chart
+    new Chart(document.getElementById('patientDistributionChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['New', 'Follow-up', 'Emergency'],
+            datasets: [{
+                data: [{{ patient_types.new }}, {{ patient_types.followup }}, {{ patient_types.emergency }}],
+                backgroundColor: ['#4361ee', '#4cc9f0', '#ff5c5c'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '75%',
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}

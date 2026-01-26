@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Record #{{ record.id }}</title>
+    <style>
+        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.5; }
+        .header { text-align: center; border-bottom: 2px solid #4e73df; padding-bottom: 10px; margin-bottom: 20px; }
+        .hospital-name { font-size: 24px; font-weight: bold; color: #4e73df; }
+        .record-title { font-size: 18px; margin-top: 5px; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-size: 16px; font-weight: bold; background: #f8f9fa; padding: 5px; border-left: 4px solid #4e73df; margin-bottom: 10px; }
+        .info-grid { width: 100%; border-collapse: collapse; }
+        .info-grid td { padding: 5px; vertical-align: top; }
+        .label { font-weight: bold; width: 150px; }
+        .vitals-box { border: 1px solid #ddd; padding: 10px; background: #fdfdfd; display: inline-block; width: 100%; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #777; border-top: 1px solid #eee; padding-top: 5px; }
+        .content-box { border: 1px solid #eee; padding: 10px; min-height: 100px; }
+        .prescription { border: 2px solid #1cc88a; padding: 10px; background: #f6fffa; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="hospital-name">HMS PRO - Hospital Management System</div>
+        <div class="record-title">Official Medical Record</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Patient Information</div>
+        <table class="info-grid">
+            <tr>
+                <td class="label">Patient Name:</td>
+                <td>{{ record.patient.user.fullName }}</td>
+                <td class="label">Date:</td>
+                <td>{{ record.createdAt|date('M d, Y') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Patient ID:</td>
+                <td>#{{ record.patient.id }}</td>
+                <td class="label">Blood Group:</td>
+                <td>{{ record.patient.bloodGroup }}</td>
+            </tr>
+            <tr>
+                <td class="label">Phone:</td>
+                <td>{{ record.patient.phone }}</td>
+                <td class="label">Email:</td>
+                <td>{{ record.patient.user.email }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Vitals & Measurements</div>
+        <div class="vitals-box">
+            <table width="100%">
+                <tr>
+                    <td align="center"><strong>Blood Pressure</strong><br>{{ record.vitalSigns.bp ?: '-' }} mmHg</td>
+                    <td align="center"><strong>Temperature</strong><br>{{ record.vitalSigns.temp ?: '-' }} °C</td>
+                    <td align="center"><strong>Weight</strong><br>{{ record.vitalSigns.weight ?: '-' }} kg</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Diagnosis & Findings</div>
+        <div class="content-box">
+            {{ record.diagnosis|nl2br }}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title" style="background: #1cc88a; color: white; border-left-color: #17a673;">Prescription / Medications</div>
+        <div class="prescription">
+            {{ record.prescription ?: 'No medication prescribed.'|nl2br }}
+        </div>
+    </div>
+
+    <div class="section" style="margin-top: 50px;">
+        <table width="100%">
+            <tr>
+                <td width="50%">
+                    <p>_______________________</p>
+                    <p>Doctor's Signature<br>
+                    <strong>Dr. {{ record.appointment.doctor.user.fullName }}</strong><br>
+                    {{ record.appointment.doctor.department.name }}</p>
+                </td>
+                <td width="50%" align="right">
+                    <p>Issued on: {{ "now"|date('M d, Y H:i') }}</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        This is a computer-generated document. HMS PRO - 123 Healthcare St, Medical City.
+    </div>
+</body>
+</html>

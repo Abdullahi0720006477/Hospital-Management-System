@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Medical Gallery | {{ system_settings.hospitalName|default('MediCore Hospital') }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .gallery-hero {
+        padding: 180px 0 100px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .gallery-hero::before {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+        top: -300px;
+        right: -300px;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 30px;
+        padding: 80px 0;
+    }
+
+    .gallery-item {
+        position: relative;
+        border-radius: 30px;
+        overflow: hidden;
+        aspect-ratio: 16/11;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 50%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 2.5rem;
+        opacity: 0;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(4px);
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+    }
+
+    .gallery-category {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #4361ee;
+        margin-bottom: 0.5rem;
+    }
+
+    .gallery-title {
+        color: white;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .gallery-description {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        transform: translateY(20px);
+        transition: transform 0.4s ease 0.1s;
+    }
+
+    .gallery-item:hover .gallery-description {
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="gallery-hero">
+    <div class="container">
+        <span class="badge bg-primary bg-opacity-20 text-primary px-3 py-2 rounded-pill mb-3">Facility Tour</span>
+        <h1 class="display-3 fw-bold mb-3">Medical Excellence <br>in Every Frame</h1>
+        <p class="lead opacity-75 mx-auto" style="max-width: 600px;">Explore the next-generation infrastructure that makes MediCore a leader in global healthcare.</p>
+    </div>
+</section>
+
+<div class="container pb-5">
+    <div class="gallery-grid">
+        <div class="gallery-item animate__animated animate__fadeIn">
+            <img src="{{ asset('images/gallery/lobby.png') }}" alt="Medical Lobby">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Infrastructure</span>
+                <h5 class="gallery-title">Smart Reception</h5>
+                <p class="gallery-description">AI-integrated patient check-in systems for a zero-wait experience.</p>
+            </div>
+        </div>
+
+        <div class="gallery-item animate__animated animate__fadeIn" style="animation-delay: 0.1s;">
+            <img src="{{ asset('images/gallery/surgery.png') }}" alt="Operation Theater">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Surgical</span>
+                <h5 class="gallery-title">Hybrid Theater</h5>
+                <p class="gallery-description">Robotic-assisted surgical suites for ultimate precision.</p>
+            </div>
+        </div>
+
+        <div class="gallery-item animate__animated animate__fadeIn" style="animation-delay: 0.2s;">
+            <img src="{{ asset('images/gallery/consultation.png') }}" alt="Consultation">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Diagnostics</span>
+                <h5 class="gallery-title">Digital Care Hub</h5>
+                <p class="gallery-description">Paperless consultation rooms connected to our global cloud.</p>
+            </div>
+        </div>
+
+        <div class="gallery-item animate__animated animate__fadeIn" style="animation-delay: 0.3s;">
+            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1000" alt="Laboratory">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Laboratories</span>
+                <h5 class="gallery-title">Genomic Lab</h5>
+                <p class="gallery-description">Advanced screening and DNA sequencing for personalized medicine.</p>
+            </div>
+        </div>
+
+        <div class="gallery-item animate__animated animate__fadeIn" style="animation-delay: 0.4s;">
+            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1000" alt="Patient Room">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Care Units</span>
+                <h5 class="gallery-title">Executive Suite</h5>
+                <p class="gallery-description">Home-like recovery environments with 24/7 panoramic views.</p>
+            </div>
+        </div>
+
+        <div class="gallery-item animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
+            <img src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&q=80&w=1000" alt="MRI Center">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Radiology</span>
+                <h5 class="gallery-title">Echo Imaging</h5>
+                <p class="gallery-description">Real-time 3D imaging for complex internal diagnostics.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

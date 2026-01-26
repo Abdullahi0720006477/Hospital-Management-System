@@ -1,0 +1,125 @@
+{% extends 'dashboard_layout.html.twig' %}
+
+{% block dashboard_title %}Medical Record Detail{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Record #{{ medical_record.id }}</h4>
+            <div class="d-print-none">
+                <a href="{{ path('app_medical_record_pdf', {'id': medical_record.id}) }}" class="btn btn-outline-danger me-2 rounded-pill shadow-sm" target="_blank">
+                    <i class="bi bi-file-pdf me-2"></i>Export PDF
+                </a>
+                <a href="{{ path('app_medical_record_edit', {'id': medical_record.id}) }}" class="btn btn-outline-primary me-2 rounded-pill shadow-sm">
+                    <i class="bi bi-pencil me-2"></i>Edit
+                </a>
+                <button class="btn btn-primary rounded-pill shadow-sm" onclick="window.print()">
+                    <i class="bi bi-printer me-2"></i>Print
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Patient & Vitals -->
+            <div class="col-md-4">
+                <!-- Patient Info -->
+                <div class="glass-card p-4 mb-4">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-person-circle me-2"></i>Patient Info</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar-circle bg-info bg-opacity-10 text-info me-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            {{ medical_record.patient.user.fullName|slice(0, 1)|upper }}
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0">{{ medical_record.patient.user.fullName }}</h6>
+                            <small class="text-muted">ID: #{{ medical_record.patient.id }}</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mb-0 small">
+                         <li class="mb-2 d-flex justify-content-between">
+                            <span class="text-muted">Blood Group:</span>
+                            <span class="fw-bold">{{ medical_record.patient.bloodGroup }}</span>
+                        </li>
+                        <li class="d-flex justify-content-between">
+                            <span class="text-muted">Allergies:</span>
+                            <span class="text-danger fw-bold text-end">{{ medical_record.patient.allergies ?: 'None' }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Vital Signs -->
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-activity me-2"></i>Vital Signs</h5>
+                    <div class="row text-center g-3">
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 bg-light bg-opacity-50">
+                                <i class="bi bi-heart text-danger d-block mb-1"></i>
+                                <small class="text-muted d-block" style="font-size: 0.75rem;">BP</small>
+                                <strong class="d-block">{{ medical_record.vitalSigns.bp ?: '-' }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 bg-light bg-opacity-50">
+                                <i class="bi bi-thermometer-half text-warning d-block mb-1"></i>
+                                <small class="text-muted d-block" style="font-size: 0.75rem;">Temp</small>
+                                <strong class="d-block">{{ medical_record.vitalSigns.temp ?: '-' }}°C</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 bg-light bg-opacity-50">
+                                <i class="bi bi-speedometer2 text-info d-block mb-1"></i>
+                                <small class="text-muted d-block" style="font-size: 0.75rem;">Weight</small>
+                                <strong class="d-block">{{ medical_record.vitalSigns.weight ?: '-' }}kg</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Medical Details -->
+            <div class="col-md-8">
+                <div class="glass-card p-4 h-100">
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-3 text-primary border-bottom pb-2">Diagnosis & Findings</h5>
+                        <div class="bg-light bg-opacity-50 p-4 rounded-3 border-start border-4 border-primary">
+                            <p class="mb-0 lead fs-6" style="white-space: pre-wrap;">{{ medical_record.diagnosis }}</p>
+                        </div>
+                        <div class="mt-2 text-end text-muted small">
+                            <i class="bi bi-check-circle me-1"></i> Examined by <span class="fw-bold">Dr. {{ medical_record.appointment.doctor.user.fullName }}</span> on {{ medical_record.createdAt|date('M d, Y H:i') }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="fw-bold mb-3 text-success border-bottom pb-2">Prescription</h5>
+                         <div class="bg-success bg-opacity-10 p-4 rounded-3 border-start border-4 border-success">
+                            <p class="mb-0 lead fs-6 text-dark" style="white-space: pre-wrap;">{{ medical_record.prescription ?: 'No medication prescribed.' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 d-print-none d-flex justify-content-between">
+            <a href="{{ path('app_medical_record_index') }}" class="btn btn-light rounded-pill shadow-sm text-muted">
+                <i class="bi bi-arrow-left me-1"></i> Back to Records
+            </a>
+            <a href="{{ path('app_patient_show', {'id': medical_record.patient.id}) }}" class="btn btn-info text-white rounded-pill shadow-sm">
+                <i class="bi bi-clock-history me-1"></i> Patient History
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        @media print {
+            .navbar-overlay, .sidebar, .chatbot-container { display: none !important; }
+            body { background: white !important; -webkit-print-color-adjust: exact; }
+            .glass-card { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
+            .d-print-none { display: none !important; }
+            .container, .dashboard-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+        }
+    </style>
+{% endblock %}

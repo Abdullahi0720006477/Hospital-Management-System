@@ -1,0 +1,93 @@
+{% extends 'page_layout.html.twig' %}
+
+{% block page_title %}Register Doctor{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_doctor_index') }}">Doctors</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="glass-card p-5">
+            <h4 class="fw-bold text-primary mb-4 text-center">Register New Medical Staff</h4>
+            
+            {# Merge forms by wrapping everything in doctorForm and manually rendering userForm fields #}
+            {{ form_start(doctorForm) }}
+                
+                <h5 class="fw-bold text-primary mb-4"><i class="bi bi-shield-lock me-2"></i>Account Information</h5>
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        {{ form_label(userForm.fullName, 'Full Name', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(userForm.fullName, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'Dr. First Last'}}) }}
+                        {{ form_errors(userForm.fullName) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_label(userForm.email, 'Email Address', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(userForm.email, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'doctor@hospital.com'}}) }}
+                        {{ form_errors(userForm.email) }}
+                    </div>
+                    <div class="col-12">
+                         {{ form_label(userForm.plainPassword, 'Temporary Password', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                         {{ form_widget(userForm.plainPassword, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'Set initial password'}}) }}
+                         {{ form_errors(userForm.plainPassword) }}
+                    </div>
+                </div>
+                {# Render CSRF token for userForm implicitly or explicitly? 
+                   If we don't call form_end(userForm), its token isn't rendered? 
+                   Actually, if we only submit doctorForm, userForm fields might not be bound if they are not children of doctorForm?
+                   
+                   Wait, in PatientController, we saw:
+                   $userForm->handleRequest($request);
+                   $patientForm->handleRequest($request);
+                   
+                   If we wrap them in one <form>, all inputs are sent.
+                   Symfony forms map fields by name. 
+                   userForm expects `registration_form[...]` (if that's the name of RegistrationFormType).
+                   doctorForm expects `doctor[...]`.
+                   
+                   If we output input fields for both, the POST request will contain data for both.
+                   So handleRequest will work for both!
+                   
+                   We just need to make sure we render the _token for userForm if CSRF is enabled per form.
+                   {{ form_row(userForm._token) }} 
+                   But standard way is form_rest(userForm) which outputs hidden fields.
+                #}
+                {{ form_rest(userForm) }}
+
+                <hr class="my-5 border-secondary opacity-25">
+
+                <h5 class="fw-bold text-primary mb-4"><i class="bi bi-hospital me-2"></i>Professional Details</h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                         {{ form_label(doctorForm.department, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                         {{ form_widget(doctorForm.department, {'attr': {'class': 'form-select rounded-3 bg-light border-0 p-3'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                         {{ form_label(doctorForm.specialization, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                         {{ form_widget(doctorForm.specialization, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'placeholder': 'e.g. Cardiologist'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                         {{ form_label(doctorForm.experience, 'Experience (Years)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                         {{ form_widget(doctorForm.experience, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'type': 'number'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                         {{ form_label(doctorForm.consultationFee, 'Consultation Fee ($)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                         {{ form_widget(doctorForm.consultationFee, {'attr': {'class': 'form-control rounded-3 bg-light border-0 p-3', 'type': 'number'}}) }}
+                    </div>
+                </div>
+
+                <div class="mt-5 d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_doctor_index') }}" class="btn btn-light rounded-pill px-4 shadow-sm text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> Back to List
+                    </a>
+                    <button class="btn btn-primary rounded-pill px-5 py-3 shadow-lg fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> Register Doctor
+                    </button>
+                </div>
+            {{ form_end(doctorForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login | {{ system_settings.hospitalName|default('MediCore') }}{% endblock %}
+
+{% block navbar %}{# Hide Navbar on Login Page #}{% endblock %}
+
+{% block body %}
+<section class="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden" 
+         style="background: url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=2000') no-repeat center center; background-size: cover;">
+    
+    {# Backdrop Overlay #}
+    <div class="position-absolute w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1;"></div>
+
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="animate__animated animate__fadeInUp">
+                    {# High-End Glassmorphism Card #}
+                    <div class="card border-0 shadow-lg" 
+                         style="background: rgba(255, 255, 255, 0.1); 
+                                backdrop-filter: blur(25px); 
+                                border: 1px solid rgba(255, 255, 255, 0.2) !important; 
+                                border-radius: 40px;
+                                box-shadow: 0 40px 100px rgba(0,0,0,0.4) !important;">
+                        <div class="card-body p-5 text-center">
+                            <div class="mb-5">
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo" style="max-height: 90px; filter: drop-shadow(0 0 20px rgba(67, 97, 238, 0.6));">
+                                <h3 class="fw-bold text-white mt-4 mb-2 tracking-tight">{{ system_settings.hospitalName|default('MediCore') }}</h3>
+                                <p class="text-white opacity-75 small uppercase tracking-widest">Hospital Management System</p>
+                            </div>
+
+                            <form method="post">
+                                {% if error %}
+                                    <div class="alert bg-danger bg-opacity-25 text-white border-0 small mb-4 p-3 rounded-4 d-flex align-items-center" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                    </div>
+                                {% endif %}
+
+                                {% if app.user %}
+                                    <div class="mb-4">
+                                        <p class="text-white opacity-75">Authenticated as <br><strong class="text-white">{{ app.user.userIdentifier }}</strong></p>
+                                        <a href="{{ path('app_logout') }}" class="btn btn-outline-light w-100 rounded-pill py-3">Logout</a>
+                                    </div>
+                                {% else %}
+                                    <div class="form-floating mb-3">
+                                        <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" 
+                                               class="form-control rounded-4 border-0 glass-input" 
+                                               placeholder="name@example.com" autocomplete="email" required autofocus>
+                                        <label for="inputEmail" class="text-white opacity-50">Email Address</label>
+                                    </div>
+                                    
+                                    <div class="form-floating mb-4">
+                                        <input type="password" name="_password" id="inputPassword" 
+                                               class="form-control rounded-4 border-0 glass-input" 
+                                               placeholder="Password" autocomplete="current-password" required>
+                                        <label for="inputPassword" class="text-white opacity-50">Password</label>
+                                    </div>
+
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                    <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-lg mb-4 glass-btn" type="submit">
+                                        Sign In to Portal
+                                    </button>
+                                    
+                                    <div class="small">
+                                        <a href="#" class="text-decoration-none text-white opacity-50 hover-opacity-100">Reset Credentials?</a>
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-5">
+                        <a href="{{ path('app_home') }}" class="text-white text-decoration-none small opacity-50 hover-opacity-100 fw-medium">
+                            <i class="bi bi-arrow-left me-2"></i> Return to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .glass-input {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s ease;
+    }
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        box-shadow: 0 0 20px rgba(67, 97, 238, 0.2) !important;
+    }
+    .glass-btn {
+        background: linear-gradient(135deg, #4361ee, #4cc9f0);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .glass-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4) !important;
+    }
+    .hover-opacity-100:hover {
+        opacity: 1 !important;
+    }
+    /* Set Label Color for Floating Input */
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4cc9f0 !important;
+    }
+</style>
+{% endblock %}
