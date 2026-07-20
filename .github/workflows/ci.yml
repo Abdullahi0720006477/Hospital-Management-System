@@ -20,7 +20,7 @@ jobs:
           extensions: mbstring, pdo, pdo_mysql, intl
 
       - name: Update Vulnerable Twig Dependency
-        run: composer update twig/twig --with-all-dependencies --no-progress --prefer-dist
+        run: composer update --with-all-dependencies --no-progress --prefer-dist
 
       - name: Save Updated Lockfile
         uses: actions/upload-artifact@v4
