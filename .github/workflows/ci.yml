@@ -19,8 +19,14 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, pdo, pdo_mysql, intl
 
-      - name: Install Dependencies
-        run: composer install --no-progress --prefer-dist
+      - name: Update Vulnerable Twig Dependency
+        run: composer update twig/twig --with-all-dependencies --no-progress --prefer-dist
+
+      - name: Save Updated Lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-composer-lock
+          path: composer.lock
 
       - name: Check PHP Syntax
         run: find src/ -name "*.php" -print0 | xargs -0 -n1 php -l
