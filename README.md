@@ -10,16 +10,6 @@ MediCore Hospital OS (v2.4.9 PRO) is a state-of-the-art Hospital Management Syst
 
 ---
 
-## 📸 Visual Showcase
-
-| Public Landing Page | Admin Analytics | Doctor Dashboard |
-| :--- | :--- | :--- |
-| ![Landing Page](https://via.placeholder.com/800x450?text=MediCore+Landing+Page) | ![Admin Dashboard](https://via.placeholder.com/800x450?text=Admin+Analytics+Orchestration) | ![Doctor Portal](https://via.placeholder.com/800x450?text=Clinical+Intelligence+Portal) |
-
-*Screenshots captured from the live v2.4.9 production build.*
-
----
-
 ## ✨ Premium Features
 
 ### 🩺 1. Clinical Intelligence (Doctor Portal)
@@ -64,8 +54,8 @@ MediCore features a **high-end glassmorphism** design system:
 ### Installation Steps
 1. **Clone the project:**
    ```bash
-   git clone https://github.com/yourusername/Hospital-Mnagemnt-system.git
-   cd Hospital-Mnagemnt-system
+   git clone https://github.com/Abdullahi0720006477/Hospital-Management-System.git
+   cd Hospital-Management-System
    ```
 2. **Install dependencies:**
    ```bash
@@ -97,6 +87,21 @@ MediCore features a **high-end glassmorphism** design system:
 - **RBAC (Role-Based Access Control)**: Granular permissions for Admin, Doctor, and Patient roles.
 - **Encryption**: TLS/SSL ready configurations with Argon2ID password hashing.
 - **CSRF Protection**: Native Symfony form protection on every data entry point.
+
+---
+
+## ✅ Testing
+
+Install the development dependencies and run:
+
+```bash
+vendor/bin/phpunit --testdox
+composer audit
+```
+
+GitHub Actions checks PHP syntax, dependency security, and the PHPUnit suite for every pull request.
+
+> **Important:** MediCore is an academic software project. Its clinical scoring and forecasting features must be validated by qualified healthcare professionals before any real-world clinical use.
 
 ---
 
